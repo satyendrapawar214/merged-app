@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Merged Client + Server</title>
+</head>
+<body>
+    <h2>Merged Client + Python Server</h2>
+
+    <button onclick="sendGet()">Send GET Request</button>
+    <button onclick="sendPost()">Send POST Request</button>
+
+    <pre id="output"></pre>
+
+    <script>
+        function sendGet() {
+            fetch("/json")
+                .then(res => res.json())
+                .then(data => document.getElementById("output").innerText =
+                    JSON.stringify(data, null, 2)
+                );
+        }
+
+        function sendPost() {
+            fetch("/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ name: "Alice" })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById("output").innerText =
+                JSON.stringify(data, null, 2)
+            );
+        }
+    </script>
+</body>
+</html>
