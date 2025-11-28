@@ -1,21 +1,23 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import http.server
+import ssl
 
-class SimpleHandler(BaseHTTPRequestHandler):
+class SimpleHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        # Send response status code
         self.send_response(200)
-
-        # Send headers
         self.send_header('Content-type', 'text/plain')
         self.end_headers()
-
-        # Send message body
         self.wfile.write(b"OK")
 
-def run(server_class=HTTPServer, handler_class=SimpleHandler, port=8080):
-    server_address = ('', port)
+def run(server_class=http.server.HTTPServer, handler_class=SimpleHandler):
+    server_address = ('', 8080)  # Use port 8080 for HTTP
     httpd = server_class(server_address, handler_class)
-    print(f'Starting server on port {port}...')
+    
+    # Optionally use SSL on port 443
+    httpd.socket = ssl.wrap_socket(httpd.socket,
+                                   keyfile="server.key",
+                                   certfile="server.crt",
+                                   server_side=True)
+    print("Starting HTTPS server...")
     httpd.serve_forever()
 
 if __name__ == '__main__':
